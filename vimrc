@@ -47,7 +47,7 @@ runtime! debian.vim
 
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
-  source /etc/vim/vimrc.local
+    source /etc/vim/vimrc.local
 endif
 
 "显示行号
@@ -134,16 +134,22 @@ func! CompileRunGcc()
     endif
 endfunc
 
-set guifont=YaHei\ Consolas\ Hybrid\ 11.5
+"set guifont=YaHei\ Consolas\ Hybrid\ 11.5
 set backspace=indent,eol,start
 
-set lines=42 columns=148
+if has("gui_running")
+    set guifont=Monaco:h12
+    set lines=40 columns=120
+endif
+
+"set lines=42 columns=148
+set clipboard=unnamed
 
 "开始使用Vundle的必须配置
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 "使用Vundle来管理Vundle
 Bundle 'gmarik/vundle'
@@ -156,7 +162,7 @@ Bundle 'altercation/vim-colors-solarized'
 " 配色规划
 set background=dark
 set t_Co=256
-colorscheme molokai 
+"colorscheme molokai 
 
 Bundle 'Lokaltog/vim-powerline'
 set laststatus=2
@@ -167,10 +173,11 @@ map <F8> :NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree
 "wincmd w
 "autocmd VimEnter * wincmd w
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") &&b:NERDTreeType == "primary") | q |endif
-
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 Bundle 'majutsushi/tagbar'
 map <F7> :TagbarToggle<CR>
+"设置ctags路径
+let g:tagbar_ctags_bin = '/Users/zke1e/PortableApps/ctags-5.8/ctags'
 let g:tagbar_width = 30       "设置宽度，默认为40  
 "autocmd VimEnter * nested :call tagbar#autoopen(1)    "打开vim时自动打开  
 let g:tagbar_right = 1        "在右侧 
@@ -178,17 +185,12 @@ let g:tagbar_right = 1        "在右侧
 Bundle 'scrooloose/syntastic'
 let g:syntastic_check_on_open = 1
 
-Bundle 'Valloric/YouCompleteMe'
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-set completeopt=longest,menu    "不显示详细提示窗口
-"在有下拉菜单是，回车表示选择当前项目
-inoremap <expr> <CR>       pumvisible()?"\<C-Y>":"\<CR>"    
-
 Bundle 'Lokaltog/vim-easymotion'
 let mapleader = ","
 
 Bundle 'jiangmiao/auto-pairs.git'
 
+call vundle#end()            " required
 "Vundle配置必须 开启插件
 filetype plugin indent on
-
+colorscheme molokai

@@ -143,7 +143,6 @@ if has("gui_running")
 endif
 
 "set lines=42 columns=148
-set clipboard=unnamed
 
 "开始使用Vundle的必须配置
 set nocompatible
@@ -164,31 +163,111 @@ set background=dark
 set t_Co=256
 "colorscheme molokai 
 
+"状态栏
 Bundle 'Lokaltog/vim-powerline'
 set laststatus=2
 let g:Powline_symbols='fancy'
 
+"文件目录窗口
 Bundle 'scrooloose/nerdtree'
 map <F8> :NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree
 "wincmd w
 "autocmd VimEnter * wincmd w
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"生成代码tag
 Bundle 'majutsushi/tagbar'
 map <F7> :TagbarToggle<CR>
 "设置ctags路径
-let g:tagbar_ctags_bin = '/Users/zke1e/PortableApps/ctags-5.8/ctags'
+let g:tagbar_ctags_bin = "/Users/zke1e/Optional/ctags-5.8/ctags"
 let g:tagbar_width = 30       "设置宽度，默认为40  
 "autocmd VimEnter * nested :call tagbar#autoopen(1)    "打开vim时自动打开  
 let g:tagbar_right = 1        "在右侧 
 
+"静态代码检查
 Bundle 'scrooloose/syntastic'
 let g:syntastic_check_on_open = 1
 
+"快速跳转
 Bundle 'Lokaltog/vim-easymotion'
 let mapleader = ","
 
+"自动补全符号
 Bundle 'jiangmiao/auto-pairs.git'
+
+"快速使用符号包围字符串
+Bundle "tpope/vim-surround"
+
+"平滑滚动
+Bundle "terryma/vim-smooth-scroll"
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+
+"快速区域选择
+Bundle 'terryma/vim-expand-region'
+vmap v <Plug>(expand_region_expand)
+vmap V <Plug>(expand_region_shrink)
+
+"代码搜索
+Bundle 'mileszs/ack.vim'
+map <Leader>c :Ack!<Space> 
+"高亮搜索关键词
+let g:ackhighlight = 1
+"修改快速预览窗口高度为15
+let g:ack_qhandler = "botright copen 15"
+"在QuickFix窗口使用快捷键以后，自动关闭QuickFix窗口
+let g:ack_autoclose = 1
+"使用ack的空白搜索，即不添加任何参数时对光标下的单词进行搜索，默认值为1，表示开启，置0以后使用空白搜索将返回错误信息
+let g:ack_use_cword_for_empty_search = 1
+
+"文件搜索
+Bundle 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_map = '<leader>p'
+let g:ctrlp_cmd = 'CtrlP'
+map <leader>f :CtrlPMRU<CR>
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
+let g:ctrlp_working_path_mode=0
+let g:ctrlp_match_window_bottom=1
+let g:ctrlp_max_height=15
+let g:ctrlp_match_window_reversed=0
+let g:ctrlp_mruf_max=500
+let g:ctrlp_follow_symlinks=1
+
+"彩虹括号匹配
+Bundle 'kien/rainbow_parentheses.vim'
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+
+" 不加入这行, 防止黑色括号出现, 很难识别
+" \ ['black',       'SeaGreen3'],
+
+let g:rbpt_max = 16
+let g:rbpt_loadcmd_toggle = 0
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
 
 call vundle#end()            " required
 "Vundle配置必须 开启插件

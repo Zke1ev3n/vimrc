@@ -114,7 +114,10 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
-let g:deoplete#enable_at_startup = 1
+"let g:deoplete#enable_at_startup = 1
+"延迟加载deoplete，使启动速度更快
+let g:deoplete#enable_at_startup = 0
+autocmd InsertEnter * call deoplete#enable()
 let g:python3_host_prog = '/Users/zke1e/.virtualenvs/neovim3/bin/python'
 " 设置用tab键进行补全
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -171,6 +174,10 @@ set background=dark
 set t_Co=256
 " colorscheme molokai 
 
+" 代码格式化
+Plug 'Chiel92/vim-autoformat'
+noremap <F3> :Autoformat<CR>
+
 " 自动补全符号
 Plug 'jiangmiao/auto-pairs'
 
@@ -185,7 +192,7 @@ let mapleader = ","
 Plug 'vim-airline/vim-airline'
 
 " 文件目录
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree'
 " 映射快捷键
 map <F8> :NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree

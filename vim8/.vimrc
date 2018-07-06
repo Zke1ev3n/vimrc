@@ -114,14 +114,16 @@ map g/ <Plug>(incsearch-stay)
 
 " 代码补全
 if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
 else
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
-let g:deoplete#enable_at_startup = 1
-" 当使用deoplete时需要的补全设置
+" 延迟加载deoplete，使启动速度更快
+let g:deoplete#enable_at_startup = 0
+autocmd InsertEnter * call deoplete#enable()
+" 在vim8中使用deoplete时需要的补全设置
 set pythonthreehome=/Users/zke1e/.virtualenvs/neovim3
 set pythonthreedll=/Users/zke1e/.virtualenvs/neovim3/.Python
 let g:python3_host_prog = '/Users/zke1e/.virtualenvs/neovim3/bin/python'
@@ -182,6 +184,11 @@ set background=dark
 set t_Co=256
 " colorscheme molokai 
 
+" 代码格式化
+Plug 'Chiel92/vim-autoformat'
+noremap <F3> :Autoformat<CR>
+
+
 " 自动补全符号
 Plug 'jiangmiao/auto-pairs'
 
@@ -196,7 +203,7 @@ let mapleader = ","
 Plug 'vim-airline/vim-airline'
 
 " 文件目录
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree'
 " 映射快捷键
 map <F8> :NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree
@@ -208,5 +215,5 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Initialize plugin system
 call plug#end()
 
-" 配色
+" 配色必须在plug#end()后设置
 colorscheme molokai 

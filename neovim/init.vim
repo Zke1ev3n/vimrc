@@ -164,10 +164,14 @@ let g:ale_linters = {
 
 
 " 主题插件
+" sublime text默认配色
 Plug 'tomasr/molokai'
 let g:molokai_original=0
 
 Plug 'altercation/vim-colors-solarized'
+
+" atom默认配色
+Plug 'joshdick/onedark.vim'
 
 " 配色规划
 set background=dark
@@ -205,4 +209,4 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 call plug#end()
 
 " 配色
-colorscheme molokai 
+colorscheme onedark

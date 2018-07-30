@@ -78,8 +78,37 @@ if has("gui_running")
 endif
 
 "set lines=42 columns=148
-" 终端下真彩色
+"终端下真彩色
 set termguicolors 
+
+"内建终端大小
+if !has('nvim')
+    set termwinsize=15x0
+endif
+"垂直分屏时，窗口在下方
+set splitbelow
+"terminal模式下映射 ctrl-[ 为返回normal模式
+:tnoremap <C-[> <C-\><C-n>
+"nvim下设置terminal分屏
+if has('nvim')
+    let s:force_vertical = exists('g:split_term_vertical') ? 1 : 0
+    "nnoremap <leader>o :below 15sp term://$SHELL<cr>i
+    fun! s:openBuffer(count, vertical)
+        let cmd = a:vertical ? 'vnew' : 'new'
+        let cmd = a:count ? a:count . cmd : cmd
+        exe cmd
+    endf
+    fun! s:openTerm(args, count, vertical)
+        let params = split(a:args)
+        let direction = s:force_vertical ? 1 : a:vertical
+
+        call s:openBuffer(a:count, direction)
+        exe 'terminal' a:args
+        exe 'startinsert'
+    endf
+command! -count -nargs=* Term call s:openTerm(<q-args>, <count>, 0)
+command! -count -nargs=* VTerm call s:openTerm(<q-args>, <count>, 1)
+endif
 
 " 文件类型检测，不设置某些插件无法使用
 filetype plugin indent on
@@ -87,8 +116,11 @@ filetype plugin indent on
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.config/nvim/plugged')
-
+if has('nvim')
+    call plug#begin('~/.config/nvim/plugged')
+else
+    call plug#begin('~/.vim/plugged')
+endif
 " Make sure you use single quotes
 
 " 生成tags
@@ -106,9 +138,17 @@ let g:tagbar_right = 1        "在右侧
 " 代码对齐虚线
 Plug 'Yggdroot/indentLine'
 
+if !has('nvim')
+    " 高亮搜索
+    Plug 'haya14busa/incsearch.vim'
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    map g/ <Plug>(incsearch-stay)
+endif
+
 " 代码补全
 if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'}
 else
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
@@ -118,6 +158,11 @@ endif
 "延迟加载deoplete，使启动速度更快
 let g:deoplete#enable_at_startup = 0
 autocmd InsertEnter * call deoplete#enable()
+if !has('nvim')
+    " 在vim8中使用deoplete时需要的补全设置
+    set pythonthreehome=/Users/zke1e/.virtualenvs/neovim3
+    set pythonthreedll=/Users/zke1e/.virtualenvs/neovim3/.Python
+endif
 let g:python3_host_prog = '/Users/zke1e/.virtualenvs/neovim3/bin/python'
 " 设置用tab键进行补全
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -132,7 +177,7 @@ Plug 'w0rp/ale'
 " let g:ale_sign_column_always = 1
 " let g:ale_set_highlights = 0
 " 只对在ale_linters中声明的文件使用ale
- let g:ale_linters_explicit = 1
+let g:ale_linters_explicit = 1
 " 设置一段延迟时间，以节省电量
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
@@ -148,19 +193,21 @@ let g:ale_lint_on_insert_leave = 1
 " 启用airline对于ale的扩展
 let g:airline#extensions#ale#enabled = 1
 
+" 查找python命令的目录
 let g:ale_virtualenv_dir_names = ['/Users/zke1e/.virtualenvs/neovim3']
+
 
 " 使用clang对c和c++进行语法检查，对python使用pylint进行语法检查
 let g:ale_linters = {
 \   'cpp': ['clang'],
 \   'c': ['clang'],
-\   'python': ['flake8'],
+\   'python': ['pyflakes'],
 \}
 
-"let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
-"let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
-"let g:ale_c_cppcheck_options = ''
-"let g:ale_cpp_cppcheck_options = ''
+" let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+" let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+" let g:ale_c_cppcheck_options = ''
+" let g:ale_cpp_cppcheck_options = ''
 
 
 " 主题插件
@@ -171,7 +218,7 @@ let g:molokai_original=0
 Plug 'altercation/vim-colors-solarized'
 
 " atom默认配色
-Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
 
 " 配色规划
 set background=dark
@@ -181,6 +228,7 @@ set t_Co=256
 " 代码格式化
 Plug 'Chiel92/vim-autoformat'
 noremap <F3> :Autoformat<CR>
+
 
 " 自动补全符号
 Plug 'jiangmiao/auto-pairs'
@@ -194,6 +242,7 @@ let mapleader = ","
 
 " 状态栏
 Plug 'vim-airline/vim-airline'
+let g:airline_theme='one'
 
 " 文件目录
 Plug 'scrooloose/nerdtree'
@@ -208,5 +257,5 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Initialize plugin system
 call plug#end()
 
-" 配色
-colorscheme onedark
+" 配色必须在plug#end()后设置
+colorscheme one

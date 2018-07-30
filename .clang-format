@@ -2,16 +2,11 @@
 #全部细节可参考官方文档
 #https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 ---
-Language:        Cpp
-# Use the Google style in this project.
 BasedOnStyle: Google
 
-# Some folks prefer to write "int& foo" while others prefer "int &foo".  The
-# Google Style Guide only asks for consistency within a project, we chose
-# "int& foo" for this project:
-#DerivePointerAlignment: false
-#PointerAlignment: Left
-
+Language: Cpp
+#使用Tab
+UseTab: Never
 #If true, analyze the formatted file for the most common alignment of & and *. Pointer and reference alignment styles are going to be updated according to the preferences found in the file. PointerAlignment is then used only as fallback.
 #如果为真，则设置使用指针和引用书写方式最多的哪一种，设置为false，则根据PointerAlignment手动设置
 DerivePointerAlignment: false
@@ -19,7 +14,7 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 #缩进宽度
 IndentWidth: 4
-#使用Tab
-UseTab: Never
+
+ColumnLimit: 0
 ---
 
